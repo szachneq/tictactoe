@@ -1,0 +1,240 @@
+*, *::after, *::before {
+  box-sizing: border-box;
+}
+
+:root {
+  --cell-size: 100px;
+  --mark-size: calc(var(--cell-size) * .85);
+  --win-line-color: rgba(50, 50, 255, 0.7);
+}
+
+body {
+  margin: 0;
+  background-color: #323232;
+  position: relative;
+  color: lightgray;
+  font-family: 'Indie Flower', cursive;
+}
+
+.board {
+  width: 100vw;
+  height: 75vh;
+  display: grid;
+  justify-content: center;
+  align-content: center;
+  justify-items: center;
+  align-items: center;
+  grid-template-columns: repeat(3, auto);
+  position: relative;
+}
+
+.cell {
+  width: var(--cell-size);
+  height: var(--cell-size);
+  border: 2px solid lightgrey;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  cursor: pointer;
+}
+
+.cell:first-child,
+.cell:nth-child(2),
+.cell:nth-child(3) {
+  border-top: none;
+}
+
+.cell:nth-child(3n + 1) {
+  border-left: none;
+}
+
+.cell:nth-child(3n + 3) {
+  border-right: none;
+}
+
+.cell:last-child,
+.cell:nth-child(8),
+.cell:nth-child(7) {
+  border-bottom: none;
+}
+
+.cell.x,
+.cell.o {
+  cursor: not-allowed;
+}
+
+.cell.x::before,
+.cell.x::after,
+.cell.o::before {
+  background-color: lightgray;
+  transition: b;
+}
+
+.board .cell:not(.x):not(.o):hover::before,
+.board .cell:not(.x):not(.o):hover::after,
+.board .cell:not(.x):not(.o):hover::before {
+  background-color: #999999;
+}
+
+.cell.x::before,
+.cell.x::after,
+.board .cell:not(.x):not(.o):hover::before,
+.board .cell:not(.x):not(.o):hover::after {
+  content: '';
+  position: absolute;
+  width: calc(var(--mark-size) * .15);
+  height: var(--mark-size);
+}
+
+.cell.x::before,
+.board .cell:not(.x):not(.o):hover::before {
+  transform: rotate(45deg);
+}
+
+.cell.x::after,
+.board .cell:not(.x):not(.o):hover::after {
+  transform: rotate(-45deg);
+}
+
+.cell.o::before,
+.cell.o::after {
+  content: '';
+  position: absolute;
+  border-radius: 50%;
+}
+
+.board .cell:not(.x):not(.o)::after,
+.board .cell:not(.x):not(.o)::before {
+  content: '';
+  background-color: rgba(255, 255, 225, 0);
+  transition: background-color 0.2s;
+}
+
+.cell.o::before {
+  width: var(--mark-size);
+  height: var(--mark-size);
+}
+
+.cell.o::after {
+  width: calc(var(--mark-size) * .75);
+  height: calc(var(--mark-size) * .75);
+  background-color: #323232;
+}
+
+.board::after {
+  content: "";
+  background-color: rgba(255, 0, 0, 0);
+  border: 0px solid var(--win-line-color);
+  position: absolute;
+  top: calc(50%  - 3px);
+  left: calc(50% - var(--cell-size) - 3px);
+  width: 6px;
+  height: 6px;
+  transition: all 0s;
+  border-radius: 3px;
+}
+
+.board_win_0::after,
+.board_win_1::after,
+.board_win_2::after,
+.board_win_3::after,
+.board_win_4::after,
+.board_win_5::after,
+.board_win_6::after,
+.board_win_7::after {
+  background-color: var(--win-line-color);
+  transform-origin: 3px 3px;
+  transition: border-right 2s, border-bottom 2s;
+}
+
+.board_win_0::after {
+  border-right: calc(2*var(--cell-size) + 6px) solid var(--win-line-color);
+  transform: translateY(calc((-1)*var(--cell-size)));
+}
+
+.board_win_1::after {
+  border-right: calc(2*var(--cell-size) + 6px) solid var(--win-line-color);
+}
+
+.board_win_2::after {
+  border-right: calc(2*var(--cell-size) + 6px) solid var(--win-line-color);
+  transform: translateY(calc(var(--cell-size)));
+}
+
+.board_win_3::after {
+  transform: translateY(calc((-1)*var(--cell-size)));
+  border-bottom: calc(2*var(--cell-size) + 6px) solid var(--win-line-color);
+}
+
+.board_win_4::after {
+  transform: translateY(calc((-1)*var(--cell-size))) translateX(calc(var(--cell-size)));
+  border-bottom: calc(2*var(--cell-size) + 6px) solid var(--win-line-color);
+}
+
+.board_win_5::after {
+  transform: translateY(calc((-1)*var(--cell-size))) translateX(calc(2*var(--cell-size)));
+  border-bottom: calc(2*var(--cell-size) + 6px) solid var(--win-line-color);
+}
+
+.board_win_6::after {
+  border-right: calc(2.73*(var(--cell-size) + 6px)) solid var(--win-line-color);
+  transform: translateY(calc((-1)*var(--cell-size))) rotate(45deg);
+}
+
+.board_win_7::after {
+  border-right: calc(2.73*(var(--cell-size) + 6px)) solid var(--win-line-color);
+  transform: translateY(calc((-1)*var(--cell-size))) translateX(calc(2*var(--cell-size))) rotate(135deg);
+}
+
+.win_message {
+  display: none;
+  position: absolute;
+  text-align: center;
+  height: 25vh;
+  width: 220px;
+  left: calc(50% - 100px);
+  opacity: 0;
+  transition: opacity 0.3s;
+  transform: translateY(-40px);
+}
+
+.win_message.visible {
+  display: block;
+  opacity: 1;
+}
+
+.win_message .message {
+  font-size: 2.5em;
+}
+
+.win_message .restart {
+  font-family: 'Indie Flower', cursive;
+  margin-top: -50px;
+  background: #323232;
+  color: lightgray;
+  border: 2px solid lightgray;
+  padding: 5px 20px;
+  border-radius: 5px;
+  font-size: 2em;
+  cursor: pointer;
+  transition: background-color 0.5s;
+}
+
+.win_message .restart:hover {
+  background: #434343;
+}
+
+@media (max-height: 440px) and (orientation: landscape) {
+  :root {
+    --cell-size: 50px;
+  }
+
+  .win_message .message {
+    font-size: 1.5em;
+  }
+
+  .win_message .restart {
+    font-size: 1em;
+  }
+}
